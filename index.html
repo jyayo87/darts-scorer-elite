@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DartMaster Elite</title>
@@ -49,7 +49,7 @@
             object-fit: contain;
         }
 
-        .main-menu, #setup-screen, #game-interface {
+        #main-menu, #setup-screen, #game-interface {
             display: none;
             flex: 1;
             flex-direction: column;
@@ -352,7 +352,7 @@
             <h1>DartMaster Elite</h1>
             <div></div>
         </header>
-        <div class="main-menu">
+        <div id="main-menu" class="main-menu">
             <h2>Select a Game</h2>
             <div class="main-games">
                 <div class="menu-card" onclick="setupGame('x01')" aria-label="Start X01 game">
@@ -727,10 +727,15 @@
         function createTargetInputGrid(grid) {
             grid.className = 'input-grid';
             var targetBtn = createButton('target', 'TARGET', 'Hit');
+            targetBtn.onclick = function() { handleInput('target', ''); };
             var doubleBtn = createButton('double', 'DOUBLE', 'x2');
+            doubleBtn.onclick = function() { handleInput('double', ''); };
             var tripleBtn = createButton('triple', 'TRIPLE', 'x3');
+            tripleBtn.onclick = function() { handleInput('triple', ''); };
             var missBtn = createButton('miss', 'MISS', gameState.options.shooterHalfScore || gameState.options.shanghaiHalfScore ? 'Half score' : '0');
+            missBtn.onclick = function() { handleInput('miss', ''); };
             var undoBtn = createButton('undo', 'UNDO', 'Last dart');
+            undoBtn.onclick = function() { handleInput('undo', ''); };
             [targetBtn, doubleBtn, tripleBtn, missBtn, undoBtn].forEach(btn => grid.appendChild(btn));
         }
 
@@ -794,10 +799,15 @@
         function createGolfInputGrid(grid) {
             grid.className = 'input-grid';
             var targetBtn = createButton('target', 'HOLE', 'Hit');
+            targetBtn.onclick = function() { handleGolfInput('target'); };
             var doubleBtn = createButton('double', 'DOUBLE', 'x2');
+            doubleBtn.onclick = function() { handleGolfInput('double'); };
             var tripleBtn = createButton('triple', 'TRIPLE', 'x3');
+            tripleBtn.onclick = function() { handleGolfInput('triple'); };
             var missBtn = createButton('miss', 'MISS', '0');
+            missBtn.onclick = function() { handleGolfInput('miss'); };
             var undoBtn = createButton('undo', 'UNDO', 'Last dart');
+            undoBtn.onclick = function() { undoLastDart(); };
             var emptyBtn = createButton('', '', '');
             emptyBtn.style.opacity = '0.3';
             emptyBtn.style.pointerEvents = 'none';
@@ -1081,33 +1091,33 @@
             }
 
             if (gameState.type === 'x01') {
-                gameState.options.x01Score = parseInt(document.getElementById('x01-score').value);
-                gameState.options.x01Start = document.getElementById('x01-start').value;
-                gameState.options.x01Finish = document.getElementById('x01-finish').value;
+                gameState.options.x01Score = parseInt(document.getElementById('x01-score').value) || 501;
+                gameState.options.x01Start = document.getElementById('x01-start').value || 'single';
+                gameState.options.x01Finish = document.getElementById('x01-finish').value || 'single';
             } else if (gameState.type === 'shooter') {
-                gameState.options.shooterRounds = parseInt(document.getElementById('shooter-rounds').value);
-                gameState.options.shooterIncludeBull = document.getElementById('shooter-bull').checked;
-                gameState.options.shooterHalfScore = document.getElementById('shooter-half').checked;
+                gameState.options.shooterRounds = parseInt(document.getElementById('shooter-rounds').value) || 5;
+                gameState.options.shooterIncludeBull = document.getElementById('shooter-bull')?.checked || false;
+                gameState.options.shooterHalfScore = document.getElementById('shooter-half')?.checked || false;
             } else if (gameState.type === 'shanghai') {
-                gameState.options.shanghaiStart = parseInt(document.getElementById('shanghai-start').value);
-                gameState.options.shanghaiEnd = parseInt(document.getElementById('shanghai-end').value);
-                gameState.options.shanghaiHalfScore = document.getElementById('shanghai-half').checked;
+                gameState.options.shanghaiStart = parseInt(document.getElementById('shanghai-start').value) || 1;
+                gameState.options.shanghaiEnd = parseInt(document.getElementById('shanghai-end').value) || 20;
+                gameState.options.shanghaiHalfScore = document.getElementById('shanghai-half')?.checked || false;
             } else if (gameState.type === 'clock') {
-                gameState.options.clockOrder = document.getElementById('clock-order').value;
-                gameState.options.clockIncludeBull = document.getElementById('clock-bull').checked;
-                gameState.options.clockQuickMode = document.getElementById('clock-quick').checked;
+                gameState.options.clockOrder = document.getElementById('clock-order').value || 'asc';
+                gameState.options.clockIncludeBull = document.getElementById('clock-bull')?.checked || false;
+                gameState.options.clockQuickMode = document.getElementById('clock-quick')?.checked || false;
             } else if (gameState.type === '120') {
-                gameState.options.order120 = document.getElementById('120-order').value;
+                gameState.options.order120 = document.getElementById('120-order').value || 'asc';
             } else if (gameState.type === 'killer') {
-                gameState.options.killerRandom = document.getElementById('killer-random').checked;
+                gameState.options.killerRandom = document.getElementById('killer-random')?.checked || false;
             } else if (gameState.type === 'golf') {
-                gameState.options.golfHoles = parseInt(document.getElementById('golf-holes').value);
+                gameState.options.golfHoles = parseInt(document.getElementById('golf-holes').value) || 9;
             } else if (gameState.type === 'baseball') {
-                gameState.options.baseballInnings = parseInt(document.getElementById('baseball-innings').value);
+                gameState.options.baseballInnings = parseInt(document.getElementById('baseball-innings').value) || 9;
             } else if (gameState.type === 'elimination') {
-                gameState.options.eliminationDarts = parseInt(document.getElementById('elimination-darts').value);
+                gameState.options.eliminationDarts = parseInt(document.getElementById('elimination-darts').value) || 3;
             } else if (gameState.type === 'highscore') {
-                gameState.options.highscoreDarts = parseInt(document.getElementById('highscore-darts').value);
+                gameState.options.highscoreDarts = parseInt(document.getElementById('highscore-darts').value) || 30;
             }
 
             initializeGame();
@@ -1176,7 +1186,7 @@
                 numbers.sort(() => Math.random() - 0.5);
             }
             gameState.players.forEach(player => {
-                player.targetNumber = numbers.pop();
+                player.targetNumber = numbers.pop() || Math.floor(Math.random() * 20) + 1;
                 player.lives = 3;
             });
         }
@@ -1276,6 +1286,37 @@
             }
             
             updateGameInterface();
+        }
+
+        function handleInput(type, number) {
+            var player = gameState.players[gameState.currentPlayer];
+            var hit = false;
+
+            if (gameState.type === 'shooter') {
+                hit = handleShooterInput(type, player);
+            } else if (gameState.type === 'shanghai') {
+                hit = handleShanghaiInput(type, player);
+            } else if (gameState.type === 'clock') {
+                hit = handleClockInput(type, player);
+            } else if (gameState.type === '120') {
+                hit = handleClockInput(type, player); // Reuse clock logic for 120
+            } else if (gameState.type === 'undo') {
+                undoLastDart();
+                return;
+            }
+
+            if (hit) {
+                player.dartsThrown++;
+                if (gameState.currentDart === 3 || (gameState.type === 'shooter' && hit)) {
+                    nextTurn();
+                } else {
+                    gameState.currentDart++;
+                    updateGameInterface();
+                }
+            } else if (type === 'miss' || type === 'undo') {
+                player.dartsThrown++;
+                nextTurn();
+            }
         }
 
         function handleX01NumberInput(number, type) {
@@ -1519,7 +1560,7 @@
                 player.holes.push(player.score);
                 player.currentHole++;
                 if (player.currentHole > gameState.options.golfHoles) {
-                    var winner = gameState.players.reduce((min, p) => p.score < min.score ? p : min);
+                    var winner = gameState.players.reduce((min, p) => p.score < min.score ? p : min, gameState.players[0]);
                     declareWinner(winner, 'LOWEST SCORE!');
                 }
             }
@@ -1543,7 +1584,7 @@
             if (player.dartsThrown % 3 === 0) {
                 player.currentInning++;
                 if (player.currentInning > gameState.options.baseballInnings) {
-                    var winner = gameState.players.reduce((max, p) => p.score > max.score ? p : max);
+                    var winner = gameState.players.reduce((max, p) => p.score > max.score ? p : max, gameState.players[0]);
                     declareWinner(winner, 'MOST RUNS!');
                 }
             }
@@ -1589,7 +1630,7 @@
             recordAction(action);
             player.dartsThrown++;
             if (player.dartsThrown >= gameState.options.highscoreDarts) {
-                var winner = gameState.players.reduce((max, p) => p.score > max.score ? p : max);
+                var winner = gameState.players.reduce((max, p) => p.score > max.score ? p : max, gameState.players[0]);
                 declareWinner(winner, 'HIGHEST SCORE!');
             }
             nextTurn();
@@ -1653,7 +1694,7 @@
         }
 
         function toggleHalfScore() {
-            gameState.options.splitHalfScore = document.getElementById('split-half').checked;
+            gameState.options.splitHalfScore = document.getElementById('split-half')?.checked || false;
         }
 
         function toggleClockQuick() {
@@ -1669,67 +1710,8 @@
             updateRemoveButtons();
         }
 
-        function toggleKillerRandom() {
-            gameState.options.killerRandom = document.getElementById('killer-random').checked;
-        }
-
-        // Initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            showMainMenu();
-            updateRemoveButtons();
-        });
+        // Initialize the game by showing the main menu
         showMainMenu();
-
-        document.querySelectorAll('.menu-card, .input-button, .back-btn, .help-btn').forEach(button => {
-            button.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    button.click();
-                }
-            });
-        });
-
-        function handleInput(type, value) {
-            if (!gameState.gameActive) return;
-            
-            if (type === 'undo') {
-                undoLastDart();
-                return;
-            }
-            
-            var player = gameState.players[gameState.currentPlayer];
-            if (gameState.type === 'x01') {
-                handleX01NumberInput(parseInt(value) || 25, type);
-            } else if (gameState.type === 'shooter') {
-                handleShooterInput(type, player);
-            } else if (gameState.type === 'shanghai') {
-                handleShanghaiInput(type, player);
-            } else if (gameState.type === 'clock' || gameState.type === '120') {
-                handleClockInput(type, player);
-            } else if (gameState.type === 'cricket') {
-                hitCricketTarget(parseInt(value) || 25, type === 'double' ? 2 : type === 'triple' ? 3 : 1);
-            } else if (gameState.type === 'split') {
-                handleSplitInput(type, player);
-            } else if (gameState.type === 'killer') {
-                handleKillerInput(parseInt(value) || 0);
-            } else if (gameState.type === 'golf') {
-                handleGolfInput(type);
-            } else if (gameState.type === 'baseball') {
-                handleBaseballInput(parseInt(value) || 0);
-            } else if (gameState.type === 'elimination') {
-                handleEliminationInput(parseInt(value) || 0);
-            } else if (gameState.type === 'highscore') {
-                handleHighscoreInput(parseInt(value) || 0);
-            }
-        }
-
-        document.querySelectorAll('.input-button').forEach(button => {
-            button.addEventListener('click', function() {
-                var className = this.className.split(' ')[1];
-                var value = this.querySelector('.button-main').textContent;
-                handleInput(className, value);
-            });
-        });
     </script>
 </body>
-
+</html>
