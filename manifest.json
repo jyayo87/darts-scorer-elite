@@ -1,0 +1,19 @@
+{
+  "name": "DartMaster Elite",
+  "short_name": "DartMaster",
+  "description": "Professional Darts Scoring System by Jamie Tech Prints",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#4a6fa5",
+  "orientation": "portrait",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "jamie-tech-prints-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
