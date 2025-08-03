@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+.<!DOCTYPE html>
 <html lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <head>
@@ -688,7 +688,7 @@
 
             <div class="setup-section">
                 <h3>➕ CREATE NEW PROFILE</h3>
-                <div style="display: flex; gap: 10px; align-items: center;">
+               <div style="display: flex; gap: 10px; align-items: center;">
                     <input type="text" id="new-profile-name" placeholder="Enter player name" style="flex: 1; padding: 15px; border: 2px solid #555; border-radius: 10px; background: rgba(64, 64, 64, 0.8); color: #ffffff; font-size: 14px;">
                     <button class="add-player-btn" onclick="createProfile()">Create Profile</button>
                 </div>
@@ -1252,55 +1252,85 @@
         }
 
         // Start game
-        function startGame() {
-            // Get players
-            var playerInputs = document.querySelectorAll('.player-input input');
-            gameState.players = [];
+        
+function startGame() {
+    console.log('startGame called');
+    
+    // Get players
+    var playerInputs = document.querySelectorAll('.player-input input');
+    gameState.players = [];
+    
+    console.log('Single player mode:', singlePlayerMode);
+    console.log('Player inputs found:', playerInputs.length);
+    
+    if (singlePlayerMode) {
+        // Single player mode
+        var name = playerInputs[0].value.trim() || 'You';
+        gameState.players.push(createPlayer(name, gameState.type));
+        console.log('Added single player:', name);
+    } else {
+        // Multiplayer mode - fixed logic
+        for (var i = 0; i < playerInputs.length; i++) {
+            var input = playerInputs[i];
+            var playerDiv = input.parentElement;
+            var name = input.value.trim();
             
-            if (singlePlayerMode) {
-                // Only add the first player for single player mode
-                var name = playerInputs[0].value.trim() || 'You';
+            // Only add players with names and visible inputs
+            if (name && playerDiv.style.display !== 'none') {
                 gameState.players.push(createPlayer(name, gameState.type));
-            } else {
-                // Add all visible players for multiplayer mode
-                playerInputs.forEach(function(input, index) {
-                    if (input.parentElement.style.display !== 'none') {
-                        var name = input.value.trim() || 'Player ' + (index + 1);
-                        gameState.players.push(createPlayer(name, gameState.type));
-                    }
-                });
+                console.log('Added player:', name);
             }
-
-            // Get game options
-            if (gameState.type === 'x01') {
-                gameState.options.x01Score = parseInt(document.getElementById('x01-score').value);
-                gameState.options.x01Start = document.getElementById('x01-start').value;
-                gameState.options.x01Finish = document.getElementById('x01-finish').value;
-            } else if (gameState.type === 'shooter') {
-                gameState.options.shooterRounds = parseInt(document.getElementById('shooter-rounds').value);
-            } else if (gameState.type === 'shanghai') {
-                gameState.options.shanghaiStart = parseInt(document.getElementById('shanghai-start').value);
-                gameState.options.shanghaiEnd = parseInt(document.getElementById('shanghai-end').value);
-            } else if (gameState.type === 'clock') {
-                gameState.options.clockOrder = document.getElementById('clock-order').value;
-            } else if (gameState.type === '120') {
-                gameState.options.order120 = document.getElementById('120-order').value;
-            }
-
-            // Initialize game
-            initializeGame();
-            
-            // Show game interface
-            document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('game-interface').style.display = 'flex';
-            
-            gameState.gameActive = true;
-            gameState.currentPlayer = 0;
-            gameState.currentDart = 1;
-            
-            updateGameInterface();
         }
+        
+        // Ensure at least 2 players for multiplayer
+        if (gameState.players.length < 2) {
+            alert('Please enter at least 2 player names for multiplayer mode.');
+            return;
+        }
+    }
+    
+    console.log('Total players:', gameState.players.length);
+    
+    if (gameState.players.length === 0) {
+        alert('No players found. Please check player names.');
+        return;
+    }
 
+    // Get game options
+    if (gameState.type === 'x01') {
+        gameState.options.x01Score = parseInt(document.getElementById('x01-score').value);
+        gameState.options.x01Start = document.getElementById('x01-start').value;
+        gameState.options.x01Finish = document.getElementById('x01-finish').value;
+    } else if (gameState.type === 'shooter') {
+        gameState.options.shooterRounds = parseInt(document.getElementById('shooter-rounds').value);
+    } else if (gameState.type === 'shanghai') {
+        gameState.options.shanghaiStart = parseInt(document.getElementById('shanghai-start').value);
+        gameState.options.shanghaiEnd = parseInt(document.getElementById('shanghai-end').value);
+    } else if (gameState.type === 'clock') {
+        gameState.options.clockOrder = document.getElementById('clock-order').value;
+    } else if (gameState.type === '120') {
+        gameState.options.order120 = document.getElementById('120-order').value;
+    }
+
+    // Initialize game
+    try {
+        initializeGame();
+        
+        // Show game interface
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('game-interface').style.display = 'flex';
+        
+        gameState.gameActive = true;
+        gameState.currentPlayer = 0;
+        gameState.currentDart = 1;
+        
+        updateGameInterface();
+        console.log('Game started successfully');
+    } catch (error) {
+        console.error('Error starting game:', error);
+        alert('Error starting game: ' + error.message);
+    }
+}
         // Create player object
         function createPlayer(name, gameType) {
             var player = {
